@@ -160,6 +160,15 @@ const PromotionsManager = () => {
         toast.success("Promotion deleted successfully");
     };
 
+    const handleToggle = (id: string) => {
+        const updatedPromotions = promotions.map(p =>
+            p.id === id ? { ...p, active: !p.active } : p
+        );
+        savePromotions(updatedPromotions);
+        const promotion = promotions.find(p => p.id === id);
+        toast.success(`Promotion ${promotion?.active ? 'deactivated' : 'activated'}`);
+    };
+
     const handleEdit = (promotion: Promotion) => {
         setEditingPromotion(promotion);
         setFormData({
@@ -401,7 +410,7 @@ const PromotionsManager = () => {
                             <CardHeader>
                                 <div className="flex justify-between items-start">
                                     <div className="flex-1">
-                                        <div className="flex items-center gap-2 mb-2">
+                                        <div className="flex items-center gap-2 mb-2 flex-wrap">
                                             <CardTitle className="text-lg">{promotion.title}</CardTitle>
                                             <span
                                                 className="px-2 py-1 rounded-full text-xs font-bold text-white"
@@ -426,23 +435,35 @@ const PromotionsManager = () => {
                                             </p>
                                         )}
                                     </div>
-                                    <div className="flex gap-2">
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => handleEdit(promotion)}
-                                            className="glass border-white/20"
-                                        >
-                                            <Edit className="w-4 h-4" />
-                                        </Button>
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => handleDelete(promotion.id)}
-                                            className="glass border-white/20 text-red-400 hover:text-red-300"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                        </Button>
+                                    <div className="flex flex-col gap-2 items-end">
+                                        <div className="flex items-center gap-2 glass border border-white/10 rounded-lg px-3 py-2">
+                                            <span className="text-xs text-muted-foreground">
+                                                {promotion.active ? 'ON' : 'OFF'}
+                                            </span>
+                                            <Switch
+                                                checked={promotion.active}
+                                                onCheckedChange={() => handleToggle(promotion.id)}
+                                                className="data-[state=checked]:bg-green-500"
+                                            />
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => handleEdit(promotion)}
+                                                className="glass border-white/20"
+                                            >
+                                                <Edit className="w-4 h-4" />
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => handleDelete(promotion.id)}
+                                                className="glass border-white/20 text-red-400 hover:text-red-300"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </Button>
+                                        </div>
                                     </div>
                                 </div>
                             </CardHeader>
